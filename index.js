@@ -1744,7 +1744,16 @@ function noFilter() {
 	choicesDiv.innerHTML = "";
 
 	hintsFormatted.forEach((hint) => {
-		choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>`;
+		let originalHint = hint.replaceAll("_ ", "_").replaceAll("  ", "");
+		console.log(originalHint);
+		let charCountGroups = originalHint
+			.split(" ")
+			.filter((f) => f.length != 0)
+			.map((word) => `(${word.length})`)
+			.join(" ");
+		choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint} ${
+			originalHint.includes(" ") ? charCountGroups : ""
+		} / ${originalHint.trim().length}"/>`;
 	});
 }
 
@@ -1758,7 +1767,15 @@ function noSpacesFilter() {
 	hintsFormatted
 		.filter((hint) => !hint.includes("    "))
 		.forEach((hint) => {
-			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>`;
+			let originalHint = hint.replaceAll("_ ", "_").replaceAll("  ", "");
+			let charCountGroups = originalHint
+				.split(" ")
+				.filter((f) => f.length != 0)
+				.map((word) => `(${word.length})`)
+				.join(" ");
+			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint} ${
+				originalHint.includes(" ") ? charCountGroups : ""
+			} / ${originalHint.trim().length}"/>`;
 		});
 }
 
@@ -1772,7 +1789,15 @@ function spacesFilter() {
 	hintsFormatted
 		.filter((hint) => hint.includes("    "))
 		.forEach((hint) => {
-			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>`;
+			let originalHint = hint.replaceAll("_ ", "_").replaceAll("  ", "");
+			let charCountGroups = originalHint
+				.split(" ")
+				.filter((f) => f.length != 0)
+				.map((word) => `(${word.length})`)
+				.join(" ");
+			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint} ${
+				originalHint.includes(" ") ? charCountGroups : ""
+			} / ${originalHint.trim().length}"/>`;
 		});
 }
 
@@ -1787,9 +1812,16 @@ function sortLengthAsc() {
 		.map((word) => word.replace(spaceRegex, "_ ").replaceAll("  ", "    ").trim())
 		.filter((value, index, array) => array.indexOf(value) === index)
 		.forEach((hint) => {
-			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>`;
+			let originalHint = hint.replaceAll("_ ", "_").replaceAll("  ", "");
+			let charCountGroups = originalHint
+				.split(" ")
+				.filter((f) => f.length != 0)
+				.map((word) => `(${word.length})`)
+				.join(" ");
+			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint} ${
+				originalHint.includes(" ") ? charCountGroups : ""
+			} / ${originalHint.trim().length}"/>`;
 		});
-	filterHints();
 }
 
 function sortLengthDesc() {
@@ -1804,9 +1836,16 @@ function sortLengthDesc() {
 		.map((word) => word.replace(spaceRegex, "_ ").replaceAll("  ", "    ").trim())
 		.filter((value, index, array) => array.indexOf(value) === index)
 		.forEach((hint) => {
-			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>`;
+			let originalHint = hint.replaceAll("_ ", "_").replaceAll("  ", "");
+			let charCountGroups = originalHint
+				.split(" ")
+				.filter((f) => f.length != 0)
+				.map((word) => `(${word.length})`)
+				.join(" ");
+			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint} ${
+				originalHint.includes(" ") ? charCountGroups : ""
+			} / ${originalHint.trim().length}"/>`;
 		});
-	filterHints();
 }
 
 searchInput.addEventListener("keyup", function (event) {
@@ -1821,7 +1860,14 @@ function filterHints() {
 		.filter((hint) => (filter != "" ? hint.trim() == filter : true))
 		.forEach((hint) => {
 			let formattedHint = hintsFormatted[hints.indexOf(hint)];
-			choicesDiv.innerHTML += `<input type="button" id="${formattedHint}" onclick="selectHint(this)" value="${formattedHint}"/>`;
+			let charCountGroups = hint
+				.split(" ")
+				.filter((f) => f.length != 0)
+				.map((word) => `(${word.length})`)
+				.join(" ");
+			choicesDiv.innerHTML += `<input type="button" id="${formattedHint}" onclick="selectHint(this)" value="${formattedHint} ${
+				hint.includes(" ") ? charCountGroups : ""
+			} / ${hint.trim().length}"/>`;
 		});
 }
 
@@ -1833,7 +1879,7 @@ function selectHint(el) {
 	document.getElementById("guesses").innerHTML = "";
 
 	correct = 0;
-	selectedHint = el.value;
+	selectedHint = el.value.split(" (")[0];
 	selectedHint = hints[hintsFormatted.indexOf(selectedHint)];
 
 	guessedThemes = [];
