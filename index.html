@@ -1,35 +1,34 @@
 <html>
-
 	<head>
 		<style>
 			body {
-				font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+				font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
+					Bitstream Vera Sans Mono, Courier New, monospace, serif;
 			}
 		</style>
 	</head>
 	<body>
-		<input type="text" id="guess" placeholder="Theme">
-		<input type="button" value="Guess" onclick="guess()">
+		<input type="text" id="guess" placeholder="Theme" />
+		<input type="button" value="Guess" onclick="guess()" />
 
-		<br>
-	
+		<br />
+
 		<h3 id="progress">0/0</h3>
-	
-		<br>
-	
+
+		<br />
+
 		<div>
 			<p id="guesses"></p>
 		</div>
 
-		<div id="choices">
-	
-		</div>
+		<input type="button" id="nofilter" value="Filter: None" onclick="noFilter()" />
+		<input type="button" id="nospacefilter" value="Filter: No Spaces" onclick="noSpacesFilter()" />
+		<input type="button" id="spacefilter" value="Filter: Spaces Only" onclick="spacesFilter()" />
+		<input type="text" id="search" placeholder="Search" />
+		<input type="button" value="Update" onclick="filterHints()" />
+
+		<div id="choices"></div>
 	</body>
-
-
-
 </html>
 
-<script src="index.js">
-	
-</script>
+<script src="index.js"></script>

@@ -1724,11 +1724,7 @@ const hintsFormatted = sortedThemes
 	.filter((value, index, array) => array.indexOf(value) === index);
 
 const choicesDiv = document.getElementById("choices");
-hintsFormatted.forEach((hint) => {
-	choicesDiv.innerHTML += `
-		<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>
-	`;
-});
+noFilter();
 
 let selectedHint = "";
 let prevEl;
@@ -1736,6 +1732,71 @@ let prevEl;
 let matchingThemes = [];
 let guessedThemes = [];
 let correct = 0;
+
+function noFilter() {
+	document.getElementById("nofilter").disabled = true;
+	document.getElementById("spacefilter").disabled = false;
+	document.getElementById("nospacefilter").disabled = false;
+
+	choicesDiv.innerHTML = "";
+
+	hintsFormatted.forEach((hint) => {
+		choicesDiv.innerHTML += `
+			<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>
+		`;
+	});
+}
+
+function noSpacesFilter() {
+	document.getElementById("nofilter").disabled = false;
+	document.getElementById("spacefilter").disabled = false;
+	document.getElementById("nospacefilter").disabled = true;
+
+	choicesDiv.innerHTML = "";
+
+	hintsFormatted
+		.filter((hint) => !hint.includes("    "))
+		.forEach((hint) => {
+			choicesDiv.innerHTML += `
+		<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>
+	`;
+		});
+}
+
+function spacesFilter() {
+	document.getElementById("nofilter").disabled = false;
+	document.getElementById("spacefilter").disabled = true;
+	document.getElementById("nospacefilter").disabled = false;
+
+	choicesDiv.innerHTML = "";
+
+	hintsFormatted
+		.filter((hint) => hint.includes("    "))
+		.forEach((hint) => {
+			choicesDiv.innerHTML += `
+		<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>
+	`;
+		});
+}
+
+let searchInput = document.getElementById("search");
+searchInput.addEventListener("keyup", function (event) {
+	filterHints();
+});
+
+function filterHints() {
+	choicesDiv.innerHTML = "";
+	const filter = searchInput.value.trim();
+
+	hints
+		.filter((hint) => hint.trim() == filter)
+		.forEach((hint) => {
+			let formattedHint = hintsFormatted[hints.indexOf(hint)];
+			choicesDiv.innerHTML += `
+		<input type="button" id="${formattedHint}" onclick="selectHint(this)" value="${formattedHint}"/>
+	`;
+		});
+}
 
 function selectHint(el) {
 	if (prevEl) prevEl.disabled = false;
@@ -1750,12 +1811,11 @@ function selectHint(el) {
 
 	guessedThemes = [];
 	matchingThemes = wordList.filter((element) => {
-		let regex = new RegExp(`^${selectedHint.replace(/_/g, "\\S+")}$`);
+		let regex = new RegExp(`^${selectedHint.replace(/_/g, ".")}$`);
 		return regex.test(element);
 	});
 
 	document.getElementById("guess").setAttribute("maxlength", selectedHint.length);
-
 	document.getElementById("progress").innerText = `${correct}/${matchingThemes.length}`;
 }
 
