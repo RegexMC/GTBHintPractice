@@ -1811,7 +1811,7 @@ function selectHint(el) {
 
 	guessedThemes = [];
 	matchingThemes = wordList.filter((element) => {
-		let regex = new RegExp(`^${selectedHint.replace(/_/g, ".")}$`);
+		let regex = new RegExp(`^${selectedHint.replace(/_/g, "\\S")}$`);
 		return regex.test(element);
 	});
 
