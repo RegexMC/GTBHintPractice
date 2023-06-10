@@ -1745,7 +1745,6 @@ function noFilter() {
 
 	hintsFormatted.forEach((hint) => {
 		let originalHint = hint.replaceAll("_ ", "_").replaceAll("  ", "");
-		console.log(originalHint);
 		let charCountGroups = originalHint
 			.split(" ")
 			.filter((f) => f.length != 0)
@@ -1879,8 +1878,8 @@ function selectHint(el) {
 	document.getElementById("guesses").innerHTML = "";
 
 	correct = 0;
-	selectedHint = el.value.split(" (")[0];
-	selectedHint = hints[hintsFormatted.indexOf(selectedHint)];
+	let selectedHintRaw = (el.value.includes("(") ? el.value.split(" (")[0] : el.value.split(" /")[0]).trim();
+	selectedHint = hints[hintsFormatted.indexOf(selectedHintRaw)];
 
 	guessedThemes = [];
 	matchingThemes = wordList.filter((element) => {
@@ -1888,8 +1887,7 @@ function selectHint(el) {
 		return regex.test(element);
 	});
 
-	console.log(matchingThemes);
-
+	document.getElementById("hint").innerText = selectedHintRaw;
 	document.getElementById("guess").setAttribute("maxlength", selectedHint.length);
 	document.getElementById("progress").innerText = `${correct}/${matchingThemes.length}`;
 }
@@ -1912,4 +1910,12 @@ function guess() {
 		document.getElementById("guesses").innerHTML += `${guessInput.value}, `;
 	}
 	guessInput.value = "";
+}
+
+function reveal() {
+	if (matchingThemes.length == 0) return;
+
+	let notGuessed = matchingThemes.filter((theme) => !guessedThemes.includes(theme.replaceAll(" ", "").toLowerCase()));
+	document.getElementById("unknown").hidden = false;
+	document.getElementById("unknown").value = notGuessed.join("\n");
 }

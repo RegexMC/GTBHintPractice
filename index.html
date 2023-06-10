@@ -15,8 +15,13 @@
 	<body>
 		<input type="text" id="guess" placeholder="Theme" />
 		<input type="button" value="Guess" onclick="guess()" />
+		<input type="button" value="Reveal Rest" onclick="reveal()" />
 
-		<br />
+		<pre>
+			<h3 id="hint"></h3>
+		</pre>
+
+		<textarea id="unknown" hidden></textarea>
 
 		<h3 id="progress">0/0</h3>
 
