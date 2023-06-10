@@ -1711,6 +1711,8 @@ const wordList = [
 	"chef hat"
 ];
 
+let searchInput = document.getElementById("search");
+
 const spaceRegex = new RegExp("[^ ]", "g");
 const sortedThemes = wordList.sort(function (a, b) {
 	return b.length - a.length;
@@ -1720,10 +1722,11 @@ const hints = sortedThemes
 	.map((word) => word.replace(spaceRegex, "_"))
 	.filter((value, index, array) => array.indexOf(value) === index);
 const hintsFormatted = sortedThemes
-	.map((word) => word.replace(spaceRegex, "_ ").replace("  ", "    ").trim())
+	.map((word) => word.replace(spaceRegex, "_ ").replaceAll("  ", "    ").trim())
 	.filter((value, index, array) => array.indexOf(value) === index);
 
 const choicesDiv = document.getElementById("choices");
+document.getElementById("sortlengthdesc").disabled = true;
 noFilter();
 
 let selectedHint = "";
@@ -1741,9 +1744,7 @@ function noFilter() {
 	choicesDiv.innerHTML = "";
 
 	hintsFormatted.forEach((hint) => {
-		choicesDiv.innerHTML += `
-			<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>
-		`;
+		choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>`;
 	});
 }
 
@@ -1757,9 +1758,7 @@ function noSpacesFilter() {
 	hintsFormatted
 		.filter((hint) => !hint.includes("    "))
 		.forEach((hint) => {
-			choicesDiv.innerHTML += `
-		<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>
-	`;
+			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>`;
 		});
 }
 
@@ -1773,13 +1772,43 @@ function spacesFilter() {
 	hintsFormatted
 		.filter((hint) => hint.includes("    "))
 		.forEach((hint) => {
-			choicesDiv.innerHTML += `
-		<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>
-	`;
+			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>`;
 		});
 }
 
-let searchInput = document.getElementById("search");
+function sortLengthAsc() {
+	document.getElementById("sortlengthasc").disabled = true;
+	document.getElementById("sortlengthdesc").disabled = false;
+	choicesDiv.innerHTML = "";
+	wordList
+		.sort(function (a, b) {
+			return a.length - b.length;
+		})
+		.map((word) => word.replace(spaceRegex, "_ ").replaceAll("  ", "    ").trim())
+		.filter((value, index, array) => array.indexOf(value) === index)
+		.forEach((hint) => {
+			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>`;
+		});
+	filterHints();
+}
+
+function sortLengthDesc() {
+	document.getElementById("sortlengthasc").disabled = false;
+	document.getElementById("sortlengthdesc").disabled = true;
+
+	choicesDiv.innerHTML = "";
+	wordList
+		.sort(function (a, b) {
+			return b.length - a.length;
+		})
+		.map((word) => word.replace(spaceRegex, "_ ").replaceAll("  ", "    ").trim())
+		.filter((value, index, array) => array.indexOf(value) === index)
+		.forEach((hint) => {
+			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint}"/>`;
+		});
+	filterHints();
+}
+
 searchInput.addEventListener("keyup", function (event) {
 	filterHints();
 });
@@ -1789,12 +1818,10 @@ function filterHints() {
 	const filter = searchInput.value.trim();
 
 	hints
-		.filter((hint) => hint.trim() == filter)
+		.filter((hint) => (filter != "" ? hint.trim() == filter : true))
 		.forEach((hint) => {
 			let formattedHint = hintsFormatted[hints.indexOf(hint)];
-			choicesDiv.innerHTML += `
-		<input type="button" id="${formattedHint}" onclick="selectHint(this)" value="${formattedHint}"/>
-	`;
+			choicesDiv.innerHTML += `<input type="button" id="${formattedHint}" onclick="selectHint(this)" value="${formattedHint}"/>`;
 		});
 }
 
@@ -1814,6 +1841,8 @@ function selectHint(el) {
 		let regex = new RegExp(`^${selectedHint.replace(/_/g, "\\S")}$`);
 		return regex.test(element);
 	});
+
+	console.log(matchingThemes);
 
 	document.getElementById("guess").setAttribute("maxlength", selectedHint.length);
 	document.getElementById("progress").innerText = `${correct}/${matchingThemes.length}`;
