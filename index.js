@@ -256,7 +256,6 @@ const wordList = [
 	"cheeseburger",
 	"cheesecake",
 	"chef",
-	"chefs hat",
 	"chemistry",
 	"cherries",
 	"cherry",
@@ -1705,7 +1704,10 @@ const wordList = [
 	"chef hat"
 ];
 
-let searchInput = document.getElementById("search");
+let selectedHint = "";
+let matchingThemes = [];
+let guessedThemes = [];
+let correct = 0;
 
 const spaceRegex = new RegExp("[^ ]", "g");
 const sortedThemes = wordList.sort(function (a, b) {
@@ -1719,161 +1721,108 @@ const hintsFormatted = sortedThemes
 	.map((word) => word.replace(spaceRegex, "_ ").replaceAll("  ", "    ").trim())
 	.filter((value, index, array) => array.indexOf(value) === index);
 
-const choicesDiv = document.getElementById("choices");
-document.getElementById("sortlengthdesc").disabled = true;
-noFilter();
+let tbl = document.getElementById("hintTable").getElementsByTagName("tbody")[0];
 
-let selectedHint = "";
-let prevEl;
-
-let matchingThemes = [];
-let guessedThemes = [];
-let correct = 0;
-
-function noFilter() {
-	document.getElementById("nofilter").disabled = true;
-	document.getElementById("spacefilter").disabled = false;
-	document.getElementById("nospacefilter").disabled = false;
-
-	choicesDiv.innerHTML = "";
-
-	hintsFormatted.forEach((hint) => {
-		let originalHint = hint.replaceAll("_ ", "_").replaceAll("  ", "");
-		let charCountGroups = originalHint
-			.split(" ")
-			.filter((f) => f.length != 0)
-			.map((word) => `(${word.length})`)
-			.join(" ");
-		choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint} ${
-			originalHint.includes(" ") ? charCountGroups : ""
-		} / ${originalHint.trim().length}"/>`;
-	});
-}
-
-function noSpacesFilter() {
-	document.getElementById("nofilter").disabled = false;
-	document.getElementById("spacefilter").disabled = false;
-	document.getElementById("nospacefilter").disabled = true;
-
-	choicesDiv.innerHTML = "";
-
-	hintsFormatted
-		.filter((hint) => !hint.includes("    "))
-		.forEach((hint) => {
-			let originalHint = hint.replaceAll("_ ", "_").replaceAll("  ", "");
-			let charCountGroups = originalHint
-				.split(" ")
-				.filter((f) => f.length != 0)
-				.map((word) => `(${word.length})`)
-				.join(" ");
-			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint} ${
-				originalHint.includes(" ") ? charCountGroups : ""
-			} / ${originalHint.trim().length}"/>`;
-		});
-}
-
-function spacesFilter() {
-	document.getElementById("nofilter").disabled = false;
-	document.getElementById("spacefilter").disabled = true;
-	document.getElementById("nospacefilter").disabled = false;
-
-	choicesDiv.innerHTML = "";
-
-	hintsFormatted
-		.filter((hint) => hint.includes("    "))
-		.forEach((hint) => {
-			let originalHint = hint.replaceAll("_ ", "_").replaceAll("  ", "");
-			let charCountGroups = originalHint
-				.split(" ")
-				.filter((f) => f.length != 0)
-				.map((word) => `(${word.length})`)
-				.join(" ");
-			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint} ${
-				originalHint.includes(" ") ? charCountGroups : ""
-			} / ${originalHint.trim().length}"/>`;
-		});
-}
-
-function sortLengthAsc() {
-	document.getElementById("sortlengthasc").disabled = true;
-	document.getElementById("sortlengthdesc").disabled = false;
-	choicesDiv.innerHTML = "";
-	wordList
-		.sort(function (a, b) {
-			return a.length - b.length;
-		})
-		.map((word) => word.replace(spaceRegex, "_ ").replaceAll("  ", "    ").trim())
-		.filter((value, index, array) => array.indexOf(value) === index)
-		.forEach((hint) => {
-			let originalHint = hint.replaceAll("_ ", "_").replaceAll("  ", "");
-			let charCountGroups = originalHint
-				.split(" ")
-				.filter((f) => f.length != 0)
-				.map((word) => `(${word.length})`)
-				.join(" ");
-			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint} ${
-				originalHint.includes(" ") ? charCountGroups : ""
-			} / ${originalHint.trim().length}"/>`;
-		});
-}
-
-function sortLengthDesc() {
-	document.getElementById("sortlengthasc").disabled = false;
-	document.getElementById("sortlengthdesc").disabled = true;
-
-	choicesDiv.innerHTML = "";
-	wordList
-		.sort(function (a, b) {
-			return b.length - a.length;
-		})
-		.map((word) => word.replace(spaceRegex, "_ ").replaceAll("  ", "    ").trim())
-		.filter((value, index, array) => array.indexOf(value) === index)
-		.forEach((hint) => {
-			let originalHint = hint.replaceAll("_ ", "_").replaceAll("  ", "");
-			let charCountGroups = originalHint
-				.split(" ")
-				.filter((f) => f.length != 0)
-				.map((word) => `(${word.length})`)
-				.join(" ");
-			choicesDiv.innerHTML += `<input type="button" id="${hint}" onclick="selectHint(this)" value="${hint} ${
-				originalHint.includes(" ") ? charCountGroups : ""
-			} / ${originalHint.trim().length}"/>`;
-		});
-}
-
-searchInput.addEventListener("keyup", function (event) {
-	filterHints();
+let hintLengths = {};
+hintsFormatted.forEach((hintsFormatted, index) => {
+	hintLengths[hintsFormatted] = hints[index].length;
 });
 
-function filterHints() {
-	choicesDiv.innerHTML = "";
-	const filter = searchInput.value.trim();
+hints.forEach((hint, index) => {
+	var row = tbl.insertRow(0);
+	row.setAttribute("onclick", `selectHint("${hintsFormatted[index]}")`);
+	var cell1 = row.insertCell(0);
+	var cell2 = row.insertCell(1);
+	var cell3 = row.insertCell(2);
 
-	hints
-		.filter((hint) => (filter != "" ? hint.trim() == filter : true))
-		.forEach((hint) => {
-			let formattedHint = hintsFormatted[hints.indexOf(hint)];
-			let charCountGroups = hint
-				.split(" ")
-				.filter((f) => f.length != 0)
-				.map((word) => `(${word.length})`)
-				.join(" ");
-			choicesDiv.innerHTML += `<input type="button" id="${formattedHint}" onclick="selectHint(this)" value="${formattedHint} ${
-				hint.includes(" ") ? charCountGroups : ""
-			} / ${hint.trim().length}"/>`;
-		});
+	cell1.innerHTML = `<pre>${hintsFormatted[index]}</pre>`;
+	cell1.classList.add("border");
+
+	cell2.innerHTML = getWordCharacters(hint);
+	cell2.style.textAlign = "right";
+
+	cell3.innerHTML = hint.length;
+	cell3.style.borderRight = "1px solid black";
+	cell3.style.borderLeft = "1px solid black";
+});
+
+let sortDirection = 1;
+
+function sortTable() {
+	const table = document.getElementById("hintTable");
+	const rows = Array.from(table.getElementsByTagName("tr"));
+
+	rows.shift();
+
+	if (sortDirection == 1) {
+		sortDirection = -1;
+	} else {
+		sortDirection = 1;
+	}
+
+	rows.sort((a, b) => {
+		let aValue = a.getElementsByTagName("td")[2].innerText.toLowerCase();
+		let bValue = b.getElementsByTagName("td")[2].innerText.toLowerCase();
+		return sortDirection * (parseInt(aValue) - parseInt(bValue));
+	});
+
+	table.getElementsByTagName("tbody")[0].append(...rows);
 }
 
-function selectHint(el) {
-	if (prevEl) prevEl.disabled = false;
-	el.disabled = true;
-	prevEl = el;
+function filterTable() {
+	const filterOption = document.getElementById("filterDropdown").value;
+	const table = document.getElementById("hintTable");
+	const rows = table.getElementsByTagName("tr");
 
+	for (let i = 1; i < rows.length; i++) {
+		const hintCell = rows[i].getElementsByTagName("td")[0];
+		const hint = getHintFromFormatted(hintCell.innerText);
+		let display = true;
+
+		if (filterOption === "nospace" && hint.includes(" ")) {
+			display = false;
+		} else if (filterOption === "onlyspace" && !hint.includes(" ")) {
+			display = false;
+		}
+
+		rows[i].style.display = display ? "" : "none";
+	}
+}
+
+document.getElementById("searchBox").addEventListener("input", function () {
+	const searchValue = this.value.toLowerCase();
+	const table = document.getElementById("hintTable");
+	const rows = table.getElementsByTagName("tr");
+
+	for (let i = 1; i < rows.length; i++) {
+		const hintCell = rows[i].getElementsByTagName("td")[0];
+		const hint = getHintFromFormatted(hintCell.innerText.toLowerCase());
+		const display = hint.includes(searchValue);
+
+		rows[i].style.display = display ? "" : "none";
+	}
+});
+
+function getHintFromFormatted(formattedHint) {
+	return formattedHint.replaceAll("_ ", "_").replaceAll("  ", "").trim();
+}
+
+function getWordCharacters(hint) {
+	let charCountGroups = hint
+		.split(" ")
+		.filter((f) => f.length != 0)
+		.map((word) => `(${word.length})`)
+		.join(" ");
+
+	return hint.includes(" ") ? charCountGroups : `(${hint.trim().length})`;
+}
+
+function selectHint(formattedhint) {
 	document.getElementById("guesses").innerHTML = "";
+	let hint = getHintFromFormatted(formattedhint);
 
 	correct = 0;
-	let selectedHintRaw = (el.value.includes("(") ? el.value.split(" (")[0] : el.value.split(" /")[0]).trim();
-	selectedHint = hints[hintsFormatted.indexOf(selectedHintRaw)];
+	selectedHint = hint;
 
 	guessedThemes = [];
 	matchingThemes = wordList.filter((element) => {
@@ -1881,7 +1830,7 @@ function selectHint(el) {
 		return regex.test(element);
 	});
 
-	document.getElementById("hint").innerText = selectedHintRaw;
+	document.getElementById("hint").innerText = formattedhint;
 	document.getElementById("guess").setAttribute("maxlength", selectedHint.length);
 	document.getElementById("progress").innerText = `${correct}/${matchingThemes.length}`;
 }

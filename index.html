@@ -1,46 +1,70 @@
 <html>
 	<head>
 		<title>Guess the Build Hint Practice</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta content="Guess the Build Hint Practice" property="og:title" />
 		<meta content="Practice your Guess the Build hinting skills online" property="og:description" />
 		<meta content="https://hintpractice.online" property="og:url" />
 		<meta content="#3273a8" data-react-helmet="true" name="theme-color" />
 		<style>
 			body {
+				padding: 10px;
 				font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono,
-					Bitstream Vera Sans Mono, Courier New, monospace, serif;
+					Bitstream Vera Sans Mono, Courier New, monospace, serif !important;
+			}
+			table {
+				border-collapse: collapse;
+			}
+
+			th,
+			td {
+				border-top: 1px solid black;
+				border-bottom: 1px solid black;
+				padding: 8px;
+			}
+			td.border {
+				border: 1px solid black !important;
+				border-right: none !important;
+			}
+
+			#searchBox {
+				margin-bottom: 10px;
 			}
 		</style>
 	</head>
 	<body>
+		<h1>Hint Practice</h1>
 		<input type="text" id="guess" placeholder="Theme" />
 		<input type="button" value="Guess" onclick="guess()" />
 		<input type="button" value="Reveal Rest" onclick="reveal()" />
-
 		<pre>
-			<h3 id="hint"></h3>
+			<h1 id="hint"></h1>
 		</pre>
-
-		<textarea id="unknown" hidden></textarea>
-
 		<h3 id="progress">0/0</h3>
-
-		<br />
-
 		<div>
 			<p id="guesses"></p>
 		</div>
+		<textarea id="unknown" hidden></textarea>
 
-		<input type="button" id="nofilter" value="Filter: None" onclick="noFilter()" />
-		<input type="button" id="nospacefilter" value="Filter: No Spaces" onclick="noSpacesFilter()" />
-		<input type="button" id="spacefilter" value="Filter: Spaces Only" onclick="spacesFilter()" />
-		<input type="text" id="search" placeholder="Search" />
-		<input type="button" value="Update" onclick="filterHints()" />
-		<br />
-		<input type="button" id="sortlengthdesc" value="Sort: Length Descending" onclick="sortLengthDesc()" />
-		<input type="button" id="sortlengthasc" value="Sort: Length Ascending" onclick="sortLengthAsc()" />
+		<h1>Hints</h1>
+		<input type="text" id="searchBox" placeholder="Search hint..." />
+		<label for="filterDropdown">Filter:</label>
+		<select id="filterDropdown" onchange="filterTable()">
+			<option value="None">None</option>
+			<option value="nospace">No Space Only</option>
+			<option value="onlyspace">Spaces Only</option>
+		</select>
 
-		<div id="choices"></div>
+		<table id="hintTable">
+			<thead>
+				<tr>
+					<th onclick="sortTable()">Hint</th>
+					<th onclick="sortTable()"></th>
+					<th onclick="sortTable()">Hint Length</th>
+				</tr>
+			</thead>
+			<tbody></tbody>
+		</table>
 	</body>
 
 	<footer>
@@ -55,5 +79,4 @@
 		</p>
 	</footer>
 </html>
-
 <script src="index.js"></script>
