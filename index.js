@@ -1723,10 +1723,42 @@ const hintsFormatted = sortedThemes
 
 let tbl = document.getElementById("hintTable").getElementsByTagName("tbody")[0];
 
+let hintPossibilities = {};
 let hintLengths = {};
-hintsFormatted.forEach((hintsFormatted, index) => {
-	hintLengths[hintsFormatted] = hints[index].length;
+hintsFormatted.forEach((hintFormatted, index) => {
+	hintLengths[hintFormatted] = hints[index].length;
+	let hint = getHintFromFormatted(hintFormatted);
+
+	let matching = wordList.filter((element) => {
+		let regex = new RegExp(`^${hint.replace(/_/g, "\\S")}$`);
+		return regex.test(element);
+	});
+
+	hintPossibilities[hintFormatted] = matching.length;
 });
+
+let rangeEl = document.getElementById("hintpossibilitiesrange");
+let maxMatching = Math.max(...Object.values(hintPossibilities));
+rangeEl.setAttribute("max", maxMatching);
+rangeEl.setAttribute("value", maxMatching);
+document.getElementById("hintlbl").innerHTML = `Max Matching Themes: ${maxMatching}`;
+
+rangeEl.onmouseup = function () {
+	document.getElementById("hintlbl").innerHTML = `Max Matching Themes: ${this.value}`;
+
+	const table = document.getElementById("hintTable");
+	const rows = table.getElementsByTagName("tr");
+
+	for (let i = 1; i < rows.length; i++) {
+		const hintCell = rows[i].getElementsByTagName("td")[0];
+		const hint = hintCell.innerText.toLowerCase();
+		if (hintPossibilities[hint] > parseInt(this.value)) {
+			rows[i].style.display = "none";
+		} else {
+			rows[i].style.display = "";
+		}
+	}
+};
 
 hints.forEach((hint, index) => {
 	var row = tbl.insertRow(0);
@@ -1815,6 +1847,20 @@ function getWordCharacters(hint) {
 		.join(" ");
 
 	return hint.includes(" ") ? charCountGroups : `(${hint.trim().length})`;
+}
+
+function selectRandomHint() {
+	const table = document.getElementById("hintTable");
+	const rows = table.getElementsByTagName("tr");
+
+	let availableHints = [];
+	for (let i = 1; i < rows.length; i++) {
+		const hintCell = rows[i].getElementsByTagName("td")[0];
+		if (rows[i].style.display == "") {
+			availableHints.push(hintCell.innerText.toLowerCase());
+		}
+	}
+	selectHint(availableHints[Math.floor(Math.random() * availableHints.length)]);
 }
 
 function selectHint(formattedhint) {

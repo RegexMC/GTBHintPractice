@@ -47,6 +47,7 @@
 		<textarea id="unknown" hidden></textarea>
 
 		<h1>Hints</h1>
+		<input type="button" onclick="selectRandomHint()" value="Select random hint" />
 		<input type="text" id="searchBox" placeholder="Search hint..." />
 		<label for="filterDropdown">Filter:</label>
 		<select id="filterDropdown" onchange="filterTable()">
@@ -54,6 +55,9 @@
 			<option value="nospace">No Space Only</option>
 			<option value="onlyspace">Spaces Only</option>
 		</select>
+		<label id="hintlbl" for="hintpossibilitiesrange">Max Matching Themes</label>
+		<input id="hintpossibilitiesrange" type="range" min="1" max="100" value="5" />
+		<p id="rangeval"></p>
 
 		<table id="hintTable">
 			<thead>
