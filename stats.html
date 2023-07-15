@@ -1,0 +1,74 @@
+<html>
+	<head>
+		<title>Guess the Build Hint Practice</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta content="Guess the Build Hint Practice" property="og:title" />
+		<meta content="Practice your Guess the Build hinting skills online" property="og:description" />
+		<meta content="https://hintpractice.online" property="og:url" />
+		<meta content="#3273a8" data-react-helmet="true" name="theme-color" />
+	</head>
+
+	<body>
+		<h1>Temporary Page. Base for retrieving from Hypixel API (not affiliated)</h1>
+		<input type="text" id="username" placeholder="Username" />
+		<input type="button" onclick="getUUID()" value="Get UUID" />
+		<br />
+		<input type="text" id="uuid" placeholder="UUID" disabled />
+		<br />
+		<input type="text" id="apiKey" placeholder="API Key" />
+		<br />
+
+		<input type="button" onclick="urlEl.value=(this.value)" value="https://api.hypixel.net/player?" />
+		<input type="button" onclick="urlEl.value=(this.value)" value="https://api.hypixel.net/recentgames?" />
+		<input type="button" onclick="urlEl.value=(this.value)" value="https://api.hypixel.net/status?" />
+		<input type="button" onclick="urlEl.value=(this.value)" value="https://api.hypixel.net/guild?" />
+		<br />
+		<input type="text" id="url" placeholder="URL" />
+		<input type="checkbox" name="appendUUID" id="appendUUID" checked />
+		<label for="appendUUID">Append uuid (&uuid=)</label>
+		<br />
+		<input type="button" onclick="fetchURL()" value="Fetch" />
+		<br />
+		<textarea id="output" placeholder="Output" disabled></textarea>
+	</body>
+</html>
+
+<script>
+	const uuidEl = document.getElementById("uuid");
+	const usernameEl = document.getElementById("username");
+	const apiKeyEl = document.getElementById("apiKey");
+	const urlEl = document.getElementById("url");
+	async function getUUID() {
+		let username = usernameEl.value;
+
+		let res = await fetch(
+			`https://cors-proxy.regexmc-noirlskills.workers.dev/https://api.mojang.com/users/profiles/minecraft/${username}`
+		);
+
+		let json = await res.json();
+		let uuid = json.id;
+		uuidEl.value = uuid;
+	}
+
+	async function fetchURL() {
+		let url = urlEl.value;
+		let apiKey = apiKeyEl.value;
+
+		if (url.length == 0 || apiKey.length == 0) {
+			alert("Missing inputs");
+			return;
+		}
+
+		if (document.getElementById("appendUUID").checked) {
+			url = url + "&uuid=" + uuidEl.value;
+		}
+
+		let res = await fetch(`${url}`, {
+			headers: {
+				"API-Key": apiKey
+			}
+		});
+		let json = await res.json();
+		document.getElementById("output").value = JSON.stringify(json, null, 4);
+	}
+</script>
