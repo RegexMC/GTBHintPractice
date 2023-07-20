@@ -1,0 +1,103 @@
+<html>
+	<head>
+		<title>Guess the Build Hint Practice</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta content="Guess the Build Hint Practice" property="og:title" />
+		<meta content="Practice your Guess the Build hinting skills online" property="og:description" />
+		<meta content="https://hintpractice.online" property="og:url" />
+		<meta content="#3273a8" data-react-helmet="true" name="theme-color" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+			crossorigin="anonymous"
+		/>
+	</head>
+
+	<body>
+		<br />
+		<div class="container">
+			<h2>Themes</h2>
+			<ul class="list-group" id="themes"></ul>
+			<br />
+			<button type="button" class="btn btn-success float-end" onclick="addTheme()">Add Theme</button>
+
+			<br />
+			<button disabled id="findoverlap" type="button" class="btn btn-primary" onclick="findOverlap()">
+				Find Overlap
+			</button>
+			<div id="overlap-div"></div>
+			<!-- Add option to: Attempt transliteration, Add/Remove S, Ignore Spaces -->
+		</div>
+
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+			crossorigin="anonymous"
+		></script>
+	</body>
+</html>
+<script>
+	function addTheme() {
+		document.getElementById("themes").innerHTML += `		<li class="list-group-item">
+					<h3 class="text-start align-middle p-2 gtb_theme" contenteditable="true">Click me to edit</h3>
+					<button type="button" onclick="removeTheme(this)" class="btn btn-danger float-end">Remove</button>
+				</li>`;
+		document.getElementById("findoverlap").disabled = false;
+	}
+
+	async function findOverlap() {
+		let themes = [...document.getElementsByClassName("gtb_theme")].map((el) => el.innerHTML.trim());
+		let response = await fetch("https://cors-proxy.regexmc-noirlskills.workers.dev/getTheme", {
+			method: "POST",
+			body: JSON.stringify({
+				theme: themes
+			})
+		});
+		let json = await response.json();
+		let overlap = findSharedValues(json);
+
+		let listhtml = `<ul class="list-group" id="themes">`;
+		overlap.forEach((tr) => {
+			listhtml += `<li class="list-group-item">${tr}</li>`;
+		});
+		listhtml += "</ul>";
+		document.getElementById("overlap-div").innerHTML = listhtml;
+	}
+
+	function findSharedValues(arr) {
+		let arrays = [];
+
+		arr.forEach((obj) => {
+			const { shortcut, ...noSC } = obj;
+			arrays.push([...Object.values(noSC)]);
+		});
+
+		let themeIntersection = intersection(arrays);
+		return themeIntersection;
+	}
+
+	function removeTheme(el) {
+		el.parentElement.remove();
+	}
+
+	function intersection(lists) {
+		var result = [];
+		for (var i = 0; i < lists.length; i++) {
+			var currentList = lists[i];
+			for (var y = 0; y < currentList.length; y++) {
+				var currentValue = currentList[y];
+				if (result.indexOf(currentValue) === -1) {
+					if (
+						lists.filter(function (obj) {
+							return obj.indexOf(currentValue) == -1;
+						}).length == 0
+					) {
+						result.push(currentValue);
+					}
+				}
+			}
+		}
+		return result;
+	}
+</script>
