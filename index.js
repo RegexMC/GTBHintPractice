@@ -191,6 +191,7 @@ function selectHint(formattedhint) {
 let guessInput = document.getElementById("guess");
 guessInput.addEventListener("keydown", function (event) {
 	if (event.key === "Enter") {
+		event.preventDefault();
 		guess();
 	}
 });
