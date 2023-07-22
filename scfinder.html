@@ -26,6 +26,9 @@
 			<button disabled id="findoverlap" type="button" class="btn btn-primary" onclick="findOverlap()">
 				Find Overlap
 			</button>
+			<button disabled id="gettranslations" type="button" class="btn btn-primary" onclick="getTranslations()">
+				Get Translations
+			</button>
 			<div id="overlap-div"></div>
 			<!-- Add option to: Attempt transliteration, Add/Remove S, Ignore Spaces -->
 		</div>
@@ -38,16 +41,60 @@
 	</body>
 </html>
 <script>
+	let total = 0;
+	function updateButtons() {
+		if (total == 1) {
+			document.getElementById("findoverlap").disabled = true;
+			document.getElementById("gettranslations").disabled = false;
+		}
+		if (total > 1) {
+			document.getElementById("findoverlap").disabled = false;
+			document.getElementById("gettranslations").disabled = true;
+		}
+	}
+
 	function addTheme() {
-		document.getElementById("themes").innerHTML += `		<li class="list-group-item">
-					<h3 class="text-start align-middle p-2 gtb_theme" contenteditable="true">Click me to edit</h3>
-					<button type="button" onclick="removeTheme(this)" class="btn btn-danger float-end">Remove</button>
-				</li>`;
-		document.getElementById("findoverlap").disabled = false;
+		// Switched from editing innerHTML due to https://stackoverflow.com/questions/38087678/why-is-innerhtml-wiping-the-values-on-these-input-fields
+		let listEl = document.createElement("li");
+		listEl.classList.add("list-group-item");
+		let inputEl = document.createElement("input");
+		inputEl.type = "text";
+		inputEl.classList.add("gtb_theme", "form-control");
+		inputEl.placeholder = "Click me to edit";
+		let buttonEl = document.createElement("button");
+		buttonEl.type = "button";
+		buttonEl.setAttribute("onclick", "removeTheme(this)");
+		buttonEl.classList.add("btn", "btn-danger", "float-end");
+		buttonEl.innerHTML = "Remove";
+		listEl.appendChild(inputEl);
+		listEl.appendChild(buttonEl);
+		document.getElementById("themes").appendChild(listEl);
+
+		total++;
+		updateButtons();
+	}
+
+	async function getTranslations() {
+		let themes = [...document.getElementsByClassName("gtb_theme")].map((el) => el.value.trim());
+		let response = await fetch("https://cors-proxy.regexmc-noirlskills.workers.dev/getTheme", {
+			method: "POST",
+			body: JSON.stringify({
+				theme: themes
+			})
+		});
+		let json = await response.json();
+		let listhtml = `<ul class="list-group" id="themes">`;
+		const { shortcut, ...noSC } = json[0];
+		Object.values(noSC).forEach((tr) => {
+			listhtml += `<li class="list-group-item">${tr}</li>`;
+		});
+
+		listhtml += "</ul>";
+		document.getElementById("overlap-div").innerHTML = listhtml;
 	}
 
 	async function findOverlap() {
-		let themes = [...document.getElementsByClassName("gtb_theme")].map((el) => el.innerHTML.trim());
+		let themes = [...document.getElementsByClassName("gtb_theme")].map((el) => el.value.trim());
 		let response = await fetch("https://cors-proxy.regexmc-noirlskills.workers.dev/getTheme", {
 			method: "POST",
 			body: JSON.stringify({
@@ -79,6 +126,8 @@
 
 	function removeTheme(el) {
 		el.parentElement.remove();
+		total--;
+		updateButtons();
 	}
 
 	function intersection(lists) {
