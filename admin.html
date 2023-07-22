@@ -43,7 +43,10 @@
 							<a class="nav-link" href="/stats">Stats</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link active" href="#">Watchlist</a>
+							<a class="nav-link" href="/watchlist">Watchlist</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link active" href="#">Admin</a>
 						</li>
 					</ul>
 				</div>
@@ -59,30 +62,17 @@
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Add user to watchlist</h5>
+							<h5 class="modal-title">Add authorized user</h5>
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
 							<form
-								action="https://cors-proxy.regexmc-noirlskills.workers.dev/submit_watchlist/"
+								action="https://cors-proxy.regexmc-noirlskills.workers.dev/submit_user/"
 								method="post"
 							>
 								<div class="mb-3">
-									<label for="usernameInput" class="form-label">Username</label>
-									<input
-										type="text"
-										name="username"
-										class="form-control"
-										id="usernameInput"
-										required
-									/>
-								</div>
-								<div class="mb-3">
-									<label for="reasonInput" class="form-label">Reason</label>
-									<select class="form-select" name="reason" id="reasonInput">
-										<option selected value="Listing">Listing</option>
-										<option value="Teaming">Teaming</option>
-									</select>
+									<label for="idInput" class="form-label">ID</label>
+									<input type="text" name="id" class="form-control" id="idInput" required />
 								</div>
 							</form>
 						</div>
