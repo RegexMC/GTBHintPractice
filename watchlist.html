@@ -40,37 +40,59 @@
 							<a class="nav-link" href="/sc">Shortcut List</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link active" href="#">Stats</a>
+							<a class="nav-link" href="/stats">Stats</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="/watchlist">Watchlist</a>
+							<a class="nav-link active" href="#">Watchlist</a>
 						</li>
 					</ul>
 				</div>
 			</div>
 		</nav>
 		<div class="container mt-4">
-			<h1>Temporary Page. Base for retrieving from Hypixel API (not affiliated)</h1>
-			<input type="text" id="username" placeholder="Username" />
-			<input type="button" onclick="getUUID()" value="Get UUID" />
-			<br />
-			<input type="text" id="uuid" placeholder="UUID" disabled />
-			<br />
-			<input type="text" id="apiKey" placeholder="API Key" />
-			<br />
-
-			<input type="button" onclick="urlEl.value=(this.value)" value="https://api.hypixel.net/player?" />
-			<input type="button" onclick="urlEl.value=(this.value)" value="https://api.hypixel.net/recentgames?" />
-			<input type="button" onclick="urlEl.value=(this.value)" value="https://api.hypixel.net/status?" />
-			<input type="button" onclick="urlEl.value=(this.value)" value="https://api.hypixel.net/guild?" />
-			<br />
-			<input type="text" id="url" placeholder="URL" />
-			<input type="checkbox" name="appendUUID" id="appendUUID" checked />
-			<label for="appendUUID">Append uuid (&uuid=)</label>
-			<br />
-			<input type="button" onclick="fetchURL()" value="Fetch" />
-			<br />
-			<textarea id="output" placeholder="Output" disabled></textarea>
+			<div class="alert alert-success" role="alert" id="successAlert" hidden>Successfully updated watchlist.</div>
+			<div class="alert alert-danger" role="alert" id="errorAlert" hidden>Failed to update watchlist.</div>
+			<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#submitUserModal">
+				Submit user
+			</button>
+			<div class="modal" id="submitUserModal" tabindex="-1">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Add user to watchlist</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<form
+								action="https://cors-proxy.regexmc-noirlskills.workers.dev/submit_watchlist/"
+								method="post"
+							>
+								<div class="mb-3">
+									<label for="usernameInput" class="form-label">Username</label>
+									<input
+										type="text"
+										name="username"
+										class="form-control"
+										id="usernameInput"
+										required
+									/>
+								</div>
+								<div class="mb-3">
+									<label for="reasonInput" class="form-label">Reason</label>
+									<select class="form-select" name="reason" id="reasonInput">
+										<option selected value="Listing">Listing</option>
+										<option value="Teaming">Teaming</option>
+									</select>
+								</div>
+							</form>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+							<button type="button" class="btn btn-primary">Submit</button>
+						</div>
+					</div>
+				</div>
+			</div>
 			<div class="mt-4">
 				<p>
 					Developed by
@@ -91,41 +113,16 @@
 	crossorigin="anonymous"
 ></script>
 <script>
-	const uuidEl = document.getElementById("uuid");
-	const usernameEl = document.getElementById("username");
-	const apiKeyEl = document.getElementById("apiKey");
-	const urlEl = document.getElementById("url");
-	async function getUUID() {
-		let username = usernameEl.value;
-
-		let res = await fetch(
-			`https://cors-proxy.regexmc-noirlskills.workers.dev/https://api.mojang.com/users/profiles/minecraft/${username}`
-		);
-
-		let json = await res.json();
-		let uuid = json.id;
-		uuidEl.value = uuid;
+	let params = new URL(document.URL).searchParams;
+	let error = params.get("error");
+	if (error === "true") {
+		let alertEl = document.getElementById("errorAlert");
+		alertEl.innerHTML = `${params.get("message")}`;
+		alertEl.hidden = false;
 	}
-
-	async function fetchURL() {
-		let url = urlEl.value;
-		let apiKey = apiKeyEl.value;
-
-		if (url.length == 0 || apiKey.length == 0) {
-			alert("Missing inputs");
-			return;
-		}
-
-		if (document.getElementById("appendUUID").checked) {
-			url = url + "&uuid=" + uuidEl.value;
-		}
-
-		let res = await fetch(`${url}`, {
-			headers: {
-				"API-Key": apiKey
-			}
-		});
-		let json = await res.json();
-		document.getElementById("output").value = JSON.stringify(json, null, 4);
+	if (error === "false") {
+		let alertEl = document.getElementById("successAlert");
+		alertEl.innerHTML = `${params.get("message")}`;
+		alertEl.hidden = false;
 	}
 </script>
