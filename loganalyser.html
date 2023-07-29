@@ -1,0 +1,85 @@
+<html>
+	<head>
+		<title>Guess the Build Hint Practice</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta content="Guess the Build Hint Practice" property="og:title" />
+		<meta content="Practice your Guess the Build hinting skills online" property="og:description" />
+		<meta content="https://hintpractice.online" property="og:url" />
+		<meta content="#3273a8" data-react-helmet="true" name="theme-color" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+			crossorigin="anonymous"
+		/>
+	</head>
+
+	<body>
+		<nav class="navbar navbar-expand-lg bg-body-tertiary">
+			<div class="container-fluid">
+				<button
+					class="navbar-toggler"
+					type="button"
+					data-bs-toggle="collapse"
+					data-bs-target="#navbarSupportedContent"
+					aria-controls="navbarSupportedContent"
+					aria-expanded="false"
+					aria-label="Toggle navigation"
+				>
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+						<li class="nav-item">
+							<a class="nav-link" aria-current="page" href="/">Hint Practice</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/scfinder">Shortcut Finder</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/sc">Shortcut List</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#">Stats</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="/watchlist">Watchlist</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link active" href="/loganalyser">Log Analysers</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+		<div class="container mt-4">
+			<h1>Small scripts for analysing logs folder with GTB in mind</h1>
+			<p>
+				The Log Analyser goes through every log file in the path specified and creates a CSV with the frequency
+				of each theme found.
+			</p>
+			<s><a href="GTBAnalyser.exe">Log Analyser (Executable)</a></s
+			><i> - seems to set off windows defender lol. use python script c:</i>
+			<br />
+			<a href="GTBAnalyser.py">Log Analyser (Python)</a>
+			<br />
+			<br />
+			<p>
+				The Log Searcher searches the logs folder for a specific theme entered. Edit python file to add log
+				path, then run in console using and complete prompt.
+			</p>
+			<a href="logsearch.py">Log Searcher (Python)</a>
+			<div class="mt-4">
+				<p>
+					Developed by
+					<a href="https://plancke.io/hypixel/player/stats/50313115a8b84db2bd85a34a3be0a7d8" target="_blank">
+						Sophie
+					</a>
+				</p>
+				<p>
+					<a href="https://github.com/sophiethefox/sophiethefox.github.io"> Source </a>
+				</p>
+			</div>
+		</div>
+	</body>
+</html>
