@@ -37,7 +37,7 @@
 							<a class="nav-link" href="/scfinder">Shortcut Finder</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="/sc">Shortcut List</a>
+							<a class="nav-link active" href="#">Shortcut List</a>
 						</li>
 						<li class="nav-item">
 							<a class="nav-link" href="/stats">Stats</a>
@@ -49,29 +49,14 @@
 							<a class="nav-link" href="/removedthemes">Removed Themes</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link active" href="#">Log Analysers</a>
+							<a class="nav-link" href="/loganalyser">Log Analysers</a>
 						</li>
 					</ul>
 				</div>
 			</div>
 		</nav>
 		<div class="container mt-4">
-			<h1>Small scripts for analysing logs folder with GTB in mind</h1>
-			<p>
-				The Log Analyser goes through every log file in the path specified and creates a CSV with the frequency
-				of each theme found.
-			</p>
-			<s><a href="GTBAnalyser.exe">Log Analyser (Executable)</a></s
-			><i> - seems to set off windows defender lol. use python script c:</i>
-			<br />
-			<a href="GTBAnalyser.py">Log Analyser (Python)</a>
-			<br />
-			<br />
-			<p>
-				The Log Searcher searches the logs folder for a specific theme entered. Edit python file to add log
-				path, then run in console using and complete prompt.
-			</p>
-			<a href="logsearch.py">Log Searcher (Python)</a>
+			<div id="shortcuts"></div>
 			<div class="mt-4">
 				<p>
 					Developed by
@@ -86,3 +71,32 @@
 		</div>
 	</body>
 </html>
+<script>
+	async function run() {
+		let response = await fetch("https://cors-proxy.regexmc-noirlskills.workers.dev/getShortcuts", {
+			method: "POST",
+			body: JSON.stringify({
+				theme: []
+			})
+		});
+		let json = await response.json();
+		json.sort((a, b) => {
+			const ratioA = a.theme.length / a.shortcut.length;
+			const ratioB = b.theme.length / b.shortcut.length;
+
+			if (ratioA > ratioB) {
+				return -1;
+			} else if (ratioA < ratioB) {
+				return 1;
+			} else {
+				return 0;
+			}
+		});
+
+		let shortcutsEl = document.getElementById("shortcuts");
+		json.forEach((theme) => {
+			shortcutsEl.innerHTML += `${theme.theme}: ${theme.shortcut}<br/>`;
+		});
+	}
+	run();
+</script>
