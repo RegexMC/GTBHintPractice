@@ -106,6 +106,34 @@
 	</body>
 </html>
 <script>
+	const languageObject = {
+		theme: "English",
+		zh: "Chinese",
+		zh_TW: "Chinese (Traditional)",
+		cs: "Czech",
+		da: "Danish",
+		nl: "Dutch",
+		fi: "Finnish",
+		fr: "French",
+		de: "German",
+		el: "Greek",
+		hu: "Hungarian",
+		it: "Italian",
+		ja: "Japanese",
+		ko: "Korean",
+		no: "Norwegian",
+		en_PT: "English (Pirate)",
+		pl: "Polish",
+		pt: "Portuguese",
+		pt_BR: "Portuguese (Brazilian)",
+		ro: "Romanian",
+		ru: "Russian",
+		es: "Spanish",
+		sv: "Swedish",
+		tr: "Turkish",
+		uk: "Ukrainian"
+	};
+
 	let total = 0;
 	function updateButtons() {
 		if (total == 0) {
@@ -156,17 +184,21 @@
 		let listhtml = `<ul class="list-group" id="themes">`;
 		const { shortcut, is_halloween, is_christmas, ...noSC } = json[0];
 		Object.keys(noSC).forEach((key) => {
-			let lang = key;
-			let tr = noSC[lang];
+			let lang = languageObject[key];
+			let tr = noSC[key];
 
-			listhtml += `<li class="list-group-item">
+			if (key == "tr" || key == "hu") {
+				listhtml += `<li class="list-group-item">
+				<span class="text-left" style="text-decoration: line-through; color: red;">${tr}</span>
+				<span class="text-right" style="text-decoration: line-through; color: red;">${lang}</span>
+				</li>`;
+			} else {
+				listhtml += `<li class="list-group-item">
 				<span class="text-left">${tr}</span>
 				<span class="text-right">${lang}</span>
 				</li>`;
+			}
 		});
-		// Object.values(noSC).forEach((tr) => {
-		// 	listhtml += `<li class="list-group-item">${tr}</li>`;
-		// });
 
 		listhtml += "</ul>";
 		document.getElementById("overlap-div").innerHTML = listhtml;
@@ -195,7 +227,8 @@
 		let arrays = [];
 
 		arr.forEach((obj) => {
-			const { shortcut, is_halloween, is_christmas, ...noSC } = obj;
+			// Remove shortcut, seasonal booleans, and Turkish and Hungarian
+			const { shortcut, is_halloween, is_christmas, tr, hu, ...noSC } = obj;
 			arrays.push([...Object.values(noSC)]);
 		});
 
@@ -210,6 +243,13 @@
 	}
 
 	function intersection(lists) {
+		// Remove trailing 's' from all strings
+		lists = lists.map((arr) => {
+			return arr.map((str) => {
+				return str.replace(/s$/, "");
+			});
+		});
+
 		var result = [];
 		for (var i = 0; i < lists.length; i++) {
 			var currentList = lists[i];
