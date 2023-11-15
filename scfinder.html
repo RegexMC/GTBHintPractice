@@ -293,6 +293,7 @@
 		// Remove trailing 's' from all strings
 		lists = lists.map((arr) => {
 			return arr.map((str) => {
+				if (str == null) return str;
 				return str.replace(/s$/, "");
 			});
 		});
