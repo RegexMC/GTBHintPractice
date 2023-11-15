@@ -13,7 +13,7 @@ let hintLengths = {};
 let rangeEl = document.getElementById("hintpossibilitiesrange");
 
 async function start() {
-	let getThemesRes = await fetch("https://cors-proxy.regexmc-noirlskills.workers.dev/getAllThemes", {
+	let getThemesRes = await fetch("https://gtb.regexmc-noirlskills.workers.dev/getAllThemes", {
 		body: "{}",
 		method: "POST"
 	});

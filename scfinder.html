@@ -12,6 +12,21 @@
 			integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
 			crossorigin="anonymous"
 		/>
+		<style>
+			.list-group-item {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.text-left {
+				order: 1;
+			}
+
+			.text-right {
+				order: 2;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -130,18 +145,28 @@
 
 	async function getTranslations() {
 		let themes = [...document.getElementsByClassName("gtb_theme")].map((el) => el.value.trim());
-		let response = await fetch("https://cors-proxy.regexmc-noirlskills.workers.dev/getTheme", {
+		let response = await fetch("https://gtb.regexmc-noirlskills.workers.dev/getTheme", {
 			method: "POST",
 			body: JSON.stringify({
 				theme: themes
 			})
 		});
+		console.log(response);
 		let json = await response.json();
 		let listhtml = `<ul class="list-group" id="themes">`;
-		const { shortcut, ...noSC } = json[0];
-		Object.values(noSC).forEach((tr) => {
-			listhtml += `<li class="list-group-item">${tr}</li>`;
+		const { shortcut, is_halloween, is_christmas, ...noSC } = json[0];
+		Object.keys(noSC).forEach((key) => {
+			let lang = key;
+			let tr = noSC[lang];
+
+			listhtml += `<li class="list-group-item">
+				<span class="text-left">${tr}</span>
+				<span class="text-right">${lang}</span>
+				</li>`;
 		});
+		// Object.values(noSC).forEach((tr) => {
+		// 	listhtml += `<li class="list-group-item">${tr}</li>`;
+		// });
 
 		listhtml += "</ul>";
 		document.getElementById("overlap-div").innerHTML = listhtml;
@@ -149,7 +174,7 @@
 
 	async function findOverlap() {
 		let themes = [...document.getElementsByClassName("gtb_theme")].map((el) => el.value.trim());
-		let response = await fetch("https://cors-proxy.regexmc-noirlskills.workers.dev/getTheme", {
+		let response = await fetch("https://gtb.regexmc-noirlskills.workers.dev/getTheme", {
 			method: "POST",
 			body: JSON.stringify({
 				theme: themes
@@ -170,7 +195,7 @@
 		let arrays = [];
 
 		arr.forEach((obj) => {
-			const { shortcut, ...noSC } = obj;
+			const { shortcut, is_halloween, is_christmas, ...noSC } = obj;
 			arrays.push([...Object.values(noSC)]);
 		});
 
