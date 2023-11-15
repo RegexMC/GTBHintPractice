@@ -26,6 +26,22 @@
 			.text-right {
 				order: 2;
 			}
+			.rm {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+			}
+			.edi {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+			}
+			.btt {
+				border-top-right-radius: 0;
+				border-top-left-radius: 0;
+			}
+			.btb {
+				border-bottom-right-radius: 0;
+				border-bottom-left-radius: 0;
+			}
 		</style>
 	</head>
 
@@ -72,17 +88,17 @@
 		</nav>
 		<div class="container mt-4">
 			<h2>Themes</h2>
-			<ul class="list-group" id="themes"></ul>
-			<br />
-			<button type="button" class="btn btn-success float-end" onclick="addTheme()">Add Theme</button>
+			<button type="button" class="btn btn-success float-end btb" onclick="addTheme()">Add Theme</button>
 
-			<br />
-			<button disabled id="findoverlap" type="button" class="btn btn-primary" onclick="findOverlap()">
+			<button disabled id="findoverlap" type="button" class="btn btn-primary btb" onclick="findOverlap()">
 				Find Overlap
 			</button>
-			<button disabled id="gettranslations" type="button" class="btn btn-primary" onclick="getTranslations()">
+			<button disabled id="gettranslations" type="button" class="btn btn-primary btb" onclick="getTranslations()">
 				Get Translations
 			</button>
+			<ul class="list-group btt" id="themes"></ul>
+
+			<hr />
 			<div id="overlap-div"></div>
 			<!-- Add option to: Attempt transliteration, Add/Remove S, Ignore Spaces -->
 			<div class="mt-4">
@@ -156,12 +172,13 @@
 		listEl.classList.add("list-group-item");
 		let inputEl = document.createElement("input");
 		inputEl.type = "text";
-		inputEl.classList.add("gtb_theme", "form-control");
+		inputEl.classList.add("gtb_theme", "form-control", "edi");
+		inputEl.setAttribute("oninput", "handleInput(this.value)");
 		inputEl.placeholder = "Click me to edit";
 		let buttonEl = document.createElement("button");
 		buttonEl.type = "button";
 		buttonEl.setAttribute("onclick", "removeTheme(this)");
-		buttonEl.classList.add("btn", "btn-danger", "float-end");
+		buttonEl.classList.add("btn", "btn-danger", "float-end", "rm");
 		buttonEl.innerHTML = "Remove";
 		listEl.appendChild(inputEl);
 		listEl.appendChild(buttonEl);
@@ -169,7 +186,32 @@
 
 		total++;
 		updateButtons();
+		handleInput("");
 	}
+
+	// Check if any of the themes are empty, if so, prevent user from clicking buttons
+	function handleInput(value) {
+		let els = document.getElementsByClassName("gtb_theme");
+		let containsEmpty = false;
+
+		for (let i = 0; i < els.length; i++) {
+			let currentValue = els[i].value;
+			if (currentValue == "") {
+				containsEmpty = true;
+				break;
+			}
+		}
+
+		if (containsEmpty) {
+			document.getElementById("findoverlap").disabled = true;
+			document.getElementById("gettranslations").disabled = true;
+		} else {
+			updateButtons();
+		}
+	}
+
+	addTheme();
+	handleInput("");
 
 	async function getTranslations() {
 		let themes = [...document.getElementsByClassName("gtb_theme")].map((el) => el.value.trim());
@@ -237,9 +279,14 @@
 	}
 
 	function removeTheme(el) {
-		el.parentElement.remove();
-		total--;
-		updateButtons();
+		if (total == 1) {
+			el.previousSibling.value = "";
+			handleInput("");
+		} else {
+			el.parentElement.remove();
+			total--;
+			updateButtons();
+		}
 	}
 
 	function intersection(lists) {
