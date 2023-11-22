@@ -56,6 +56,9 @@
 			</div>
 		</nav>
 		<div class="container mt-4">
+			<input type="checkbox" id="multi" name="multi" />
+			<label for="multi">Multi</label><br />
+
 			<div id="shortcuts"></div>
 			<div class="mt-4">
 				<p>
@@ -72,6 +75,51 @@
 	</body>
 </html>
 <script>
+	let themes;
+	function filterObjectsByShortcut(array) {
+		return array.reduce((acc, obj) => {
+			// Check if there is already an entry with the same shortcut
+			const existingEntry = acc.find((entry) => entry.shortcut.toLowerCase() === obj.shortcut.toLowerCase());
+
+			if (existingEntry) {
+				// If an entry with the same shortcut exists, merge the values
+				existingEntry.theme.push(obj.theme);
+			} else {
+				// If no entry with the same shortcut exists, create a new entry
+				acc.push({ shortcut: obj.shortcut, theme: [obj.theme] });
+			}
+
+			return acc;
+		}, []);
+	}
+	const filterObjectsByShortcutOverlap = (array) => {
+		const shortcutCounts = {};
+
+		// Count occurrences of each shortcut
+		array.forEach((obj) => {
+			shortcutCounts[obj.shortcut] = (shortcutCounts[obj.shortcut] || 0) + 1;
+		});
+
+		// Filter objects with overlapping shortcuts
+		return array.filter((obj) => shortcutCounts[obj.shortcut] > 1);
+	};
+
+	document.getElementById("multi").addEventListener("change", () => {
+		if (!themes) return;
+		let shortcutsEl = document.getElementById("shortcuts");
+		shortcutsEl.innerHTML = "";
+
+		if (document.getElementById("multi").checked) {
+			filterObjectsByShortcut(filterObjectsByShortcutOverlap(themes)).forEach((theme) => {
+				shortcutsEl.innerHTML += `${theme.theme.join(", ")}: ${theme.shortcut}<br/>`;
+			});
+		} else {
+			filterObjectsByShortcut(themes).forEach((theme) => {
+				shortcutsEl.innerHTML += `${theme.theme.join(", ")}: ${theme.shortcut}<br/>`;
+			});
+		}
+	});
+
 	async function run() {
 		let response = await fetch("https://gtb.regexmc-noirlskills.workers.dev/getShortcuts", {
 			method: "POST",
@@ -92,10 +140,11 @@
 				return 0;
 			}
 		});
+		themes = json;
 
 		let shortcutsEl = document.getElementById("shortcuts");
-		json.forEach((theme) => {
-			shortcutsEl.innerHTML += `${theme.theme}: ${theme.shortcut}<br/>`;
+		filterObjectsByShortcut(themes).forEach((theme) => {
+			shortcutsEl.innerHTML += `${theme.theme.join(", ")}: ${theme.shortcut}<br/>`;
 		});
 	}
 	run();
