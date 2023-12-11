@@ -12,6 +12,37 @@
 			integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
 			crossorigin="anonymous"
 		/>
+		<style>
+			.list-group-item {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.text-left {
+				order: 1;
+			}
+
+			.text-right {
+				order: 2;
+			}
+			.rm {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+			}
+			.edi {
+				border-top-right-radius: 0;
+				border-bottom-right-radius: 0;
+			}
+			.btt {
+				border-top-right-radius: 0;
+				border-top-left-radius: 0;
+			}
+			.btb {
+				border-bottom-right-radius: 0;
+				border-bottom-left-radius: 0;
+			}
+		</style>
 	</head>
 
 	<body>
@@ -65,37 +96,27 @@
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Add user to watchlist</h5>
+							<h5 class="modal-title">Add user(s) to watchlist</h5>
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
-							<form action="https://gtb.regexmc-noirlskills.workers.dev/submit_watchlist/" method="post">
-								<div class="mb-3">
-									<label for="usernameInput" class="form-label">Username</label>
-									<input
-										type="text"
-										name="username"
-										class="form-control"
-										id="usernameInput"
-										required
-									/>
-								</div>
-								<div class="mb-3">
-									<label for="reasonInput" class="form-label">Reason</label>
-									<select class="form-select" name="reason" id="reasonInput">
-										<option selected value="Listing">Listing</option>
-										<option value="Teaming">Teaming</option>
-									</select>
-								</div>
-							</form>
+							<button type="button" class="btn btn-success btb" onclick="addUser()">Add User</button>
+							<br />
+
+							<ul class="list-group btt" id="users"></ul>
 						</div>
+
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-							<button type="submit" class="btn btn-primary">Submit</button>
+							<button disabled id="submit_users" class="btn btn-primary" onclick="submitUsers()">
+								Submit
+							</button>
 						</div>
 					</div>
 				</div>
 			</div>
+			<div id="watchlist_users"></div>
+
 			<div class="mt-4">
 				<p>
 					Developed by
@@ -116,6 +137,154 @@
 	crossorigin="anonymous"
 ></script>
 <script>
+	(async () => {
+		let response = await fetch("https://gtb.regexmc-noirlskills.workers.dev/getWatchlist", {
+			method: "POST",
+			body: "{}"
+		});
+
+		let json = await response.json();
+		let x = document.getElementById("watchlist_users");
+		console.log(json);
+		json.forEach((user) => {
+			const reasons = ["Listing", "Teaming", "Botting", "Annoying"];
+			let reportedReasons = [];
+			for (let i = 0; i < user.reason.length; i++) {
+				const currentCharacter = user.reason[i];
+				if (currentCharacter === "1") {
+					reportedReasons.push(reasons[i]);
+				}
+			}
+
+			x.innerHTML += `${user.uuid} ${user.username} ${reportedReasons.join(", ")}<br/>`;
+		});
+	})();
+
+	let total = 0;
+	function updateButtons() {
+		if (total == 0) {
+			document.getElementById("submit_users").disabled = true;
+		}
+		if (total >= 1) {
+			document.getElementById("submit_users").disabled = false;
+		}
+	}
+
+	async function submitUsers() {
+		let users = [];
+		[...document.getElementsByClassName("user")].forEach((el) => {
+			let listing = el.parentElement.nextElementSibling.children[0].children[0].checked;
+			let teaming = el.parentElement.nextElementSibling.children[0].children[2].checked;
+			let botting = el.parentElement.nextElementSibling.children[0].children[4].checked;
+			let annoying = el.parentElement.nextElementSibling.children[0].children[6].checked;
+
+			users.push({ username: el.value.trim(), reason: `${+listing}${+teaming}${+botting}${+annoying}` });
+		});
+
+		console.log(users);
+
+		let response = await fetch("https://gtb.regexmc-noirlskills.workers.dev/submit_watchlist/", {
+			method: "POST",
+			body: JSON.stringify({
+				users: users
+			})
+		});
+
+		let url = await response.text();
+		window.location.href = url;
+	}
+
+	let x = 0;
+
+	function addUser() {
+		// Switched from editing innerHTML due to https://stackoverflow.com/questions/38087678/why-is-innerhtml-wiping-the-values-on-these-input-fields
+		let listEl = document.createElement("li");
+		listEl.classList.add("list-group-item");
+
+		let a = document.createElement("div");
+		a.classList.add("d-flex", "flex-column");
+
+		let b = document.createElement("div");
+		b.classList.add("p-2");
+
+		let inputEl = document.createElement("input");
+		inputEl.type = "text";
+		inputEl.classList.add("user", "form-control", "edi");
+		inputEl.setAttribute("oninput", "handleInput(this.value)");
+		inputEl.placeholder = "Click me to edit";
+		let buttonEl = document.createElement("button");
+		buttonEl.type = "button";
+		buttonEl.setAttribute("onclick", "removeUser(this)");
+		buttonEl.classList.add("btn", "btn-danger", "float-end", "rm");
+		buttonEl.innerHTML = "Remove";
+
+		b.appendChild(inputEl);
+		b.appendChild(buttonEl);
+		a.appendChild(b);
+
+		let c = document.createElement("div");
+		c.classList.add("p-2");
+
+		c.innerHTML += `
+			<div>
+				<input type="checkbox" id="reason_listing${x}" name="reason_listing${x}"/>
+				<label for="reason_listing${x}">Listing</label>
+
+				<input type="checkbox" id="reason_teaming${x}" name="reason_teaming${x}"/>
+				<label for="reason_teaming${x}">Teaming</label>
+
+				<input type="checkbox" id="reason_botting${x}" name="reason_botting${x}"/>
+				<label for="reason_botting${x}">Botting</label>
+
+				<input type="checkbox" id="reason_annoying${x}" name="reason_annoying${x}"/>
+				<label for="reason_annoying${x}">Annoying</label>
+			</div>
+			`;
+
+		a.appendChild(c);
+		listEl.appendChild(a);
+
+		document.getElementById("users").appendChild(listEl);
+
+		total++;
+		x++;
+		updateButtons();
+		handleInput("");
+	}
+
+	function handleInput(value) {
+		let els = document.getElementsByClassName("user");
+		let containsEmpty = false;
+
+		for (let i = 0; i < els.length; i++) {
+			let currentValue = els[i].value;
+			if (currentValue == "") {
+				containsEmpty = true;
+				break;
+			}
+		}
+
+		if (containsEmpty) {
+			document.getElementById("submit_users").disabled = true;
+		} else {
+			updateButtons();
+		}
+	}
+
+	addUser();
+	handleInput("");
+
+	function removeUser(el) {
+		if (total == 1) {
+			el.previousSibling.value = "";
+			handleInput("");
+		} else {
+			el.parentElement.parentElement.parentElement.remove();
+			total--;
+			updateButtons();
+		}
+	}
+
 	let params = new URL(document.URL).searchParams;
 	let error = params.get("error");
 	if (error === "true") {
