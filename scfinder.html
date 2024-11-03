@@ -229,17 +229,10 @@
 			let lang = languageObject[key];
 			let tr = noSC[key];
 
-			if (key == "tr" || key == "hu") {
-				listhtml += `<li class="list-group-item">
-				<span class="text-left" style="text-decoration: line-through; color: red;">${tr}</span>
-				<span class="text-right" style="text-decoration: line-through; color: red;">${lang}</span>
-				</li>`;
-			} else {
-				listhtml += `<li class="list-group-item">
+			listhtml += `<li class="list-group-item">
 				<span class="text-left">${tr}</span>
 				<span class="text-right">${lang}</span>
 				</li>`;
-			}
 		});
 
 		listhtml += "</ul>";
@@ -269,8 +262,8 @@
 		let arrays = [];
 
 		arr.forEach((obj) => {
-			// Remove shortcut, seasonal booleans, and Turkish and Hungarian
-			const { shortcut, is_halloween, is_christmas, tr, hu, ...noSC } = obj;
+			// Remove shortcut, seasonal booleans
+			const { shortcut, is_halloween, is_christmas, ...noSC } = obj;
 			arrays.push([...Object.values(noSC)]);
 		});
 
