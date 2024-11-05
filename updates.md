@@ -1,6 +1,37 @@
 # GTB Changes since ~January 2023 <sup>ignoring seasonal themes</sup>
 
+## November 2024
+
+[Forum post](https://hypixel.net/threads/build-battle-speed-builders-emblems-1-21-more.5703921/)
+
+-   <span style="color:red">No themes added</span>
+-   **No seasonal themes** in future confirmed
+-   New **titles added**, old changed
+-   **Emblems** added
+-   **Special Blocks** item in Options added:
+    -   _Red/Brown_ mushroom block
+    -   _Oak/Spruce/Birch/Jungle/Acacia/Dark Oak_ bark <sup>(6 sided log)</sup>
+    -   Dragon Egg
+    -   Barrier
+-   **Guesser chat added**
+-   **Backdrops Added**:
+    -   Village
+    -   Grey Spire
+    -   Sky Line
+    -   Art
+    -   Midnight Town
+    -   Coffee
+    -   Artifact
+    -   Ruins
+    -   Web
+    -   Desert
+    -   Vanilla
+    -   City
+-   GTB NPC moved to the centre
+-   Max build height set to 50 blocks
+
 ## October 2024
+
 ```diff
 + Antivirus
 + Atom
@@ -143,7 +174,9 @@
 - Yellow Brick Road
 - Yoghurt
 ```
+
 ## ~July 2023
+
 ```diff
 + Crafting Table
 + Mail Box
@@ -156,7 +189,7 @@
 - Monkey
 - Package
 - Rope
-- Soldier 
+- Soldier
 - Tank
 - Tightrope
 ```
