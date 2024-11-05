@@ -8,6 +8,8 @@
 -   **No seasonal themes** in future confirmed
 -   New **titles added**, old changed
 -   **Emblems** added
+-   **Default hotbar removed**, but the game now repeatedly prompts you to open the creative inventory
+-   **Placing entities and navigating menus prevents you from getting AFK kicked**
 -   **Special Blocks** item in Options added:
     -   _Red/Brown_ mushroom block
     -   _Oak/Spruce/Birch/Jungle/Acacia/Dark Oak_ bark <sup>(6 sided log)</sup>
