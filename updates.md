@@ -9,40 +9,42 @@
 -   New **titles added**, old changed
 
 Old Titles:
-| Title | Score |
+
+| Title                                                        | Score |
 | ------------------------------------------------------------ | ----- |
-| <span style="color:#FFFFFF;background:#555555">Rookie</span> | 0 |
-| <span style="color:#555555">Untrained | 100 |
-| <span style="color:#FFFF55">Amateur | 250 |
-| <span style="color:#55FF55">Apprentice | 500 |
-| <span style="color:#FF55FF">Experienced | 1000 |
-| <span style="color:#5555FF">Seasoned | 2000 |
-| <span style="color:#00AA00">Trained | 3500 |
-| <span style="color:#00AAAA">Skilled | 5000 |
-| <span style="color:#FF5555">Talented | 7500 |
-| <span style="color:#AA00AA">Professional | 10000 |
-| <span style="color:#0000AA">Expert | 15000 |
-| <span style="color:#AA0000">Master | 20000 |
-| <span style="color:#FFAA00">#1 Builder | N/A |
+| <span style="color:#FFFFFF;background:#555555">Rookie</span> | 0     |
+| <span style="color:#555555">Untrained                        | 100   |
+| <span style="color:#FFFF55">Amateur                          | 250   |
+| <span style="color:#55FF55">Apprentice                       | 500   |
+| <span style="color:#FF55FF">Experienced                      | 1000  |
+| <span style="color:#5555FF">Seasoned                         | 2000  |
+| <span style="color:#00AA00">Trained                          | 3500  |
+| <span style="color:#00AAAA">Skilled                          | 5000  |
+| <span style="color:#FF5555">Talented                         | 7500  |
+| <span style="color:#AA00AA">Professional                     | 10000 |
+| <span style="color:#0000AA">Expert                           | 15000 |
+| <span style="color:#AA0000">Master                           | 20000 |
+| <span style="color:#FFAA00">#1 Builder                       | N/A   |
 
 New Titles:
-| Title | Score |
+
+| Title                                                          | Score  |
 | -------------------------------------------------------------- | ------ |
-| <span style="color:#FFFFFF;background:#555555">Prospect</span> | 0 |
-| <span style="color:#AAAAAA">Rookie | 100 |
-| <span style="color:#555555">Amateur | 250 |
-| <span style="color:#55FF55">Apprentice | 500 |
-| <span style="color:#00AA00">Trained | 1000 |
-| <span style="color:#55FFFF">Experienced | 2500 |
-| <span style="color:#00AAAA">Seasoned | 5000 |
-| <span style="color:#5555FF">Skilled | 10000 |
-| <span style="color:#0000AA">Talented | 25000 |
-| <span style="color:#AA00AA">Professional | 50000 |
-| <span style="color:#FF55FF">Artisan | 100000 |
-| <span style="color:#FF5555">Expert | 200000 |
-| <span style="color:#AA0000">Master | 350000 |
-| <span style="color:#FFAA00">Grandmaster | 500000 |
-| <span style="color:#FFFF55">#1 Builder | N/A |
+| <span style="color:#FFFFFF;background:#555555">Prospect</span> | 0      |
+| <span style="color:#AAAAAA">Rookie                             | 100    |
+| <span style="color:#555555">Amateur                            | 250    |
+| <span style="color:#55FF55">Apprentice                         | 500    |
+| <span style="color:#00AA00">Trained                            | 1000   |
+| <span style="color:#55FFFF">Experienced                        | 2500   |
+| <span style="color:#00AAAA">Seasoned                           | 5000   |
+| <span style="color:#5555FF">Skilled                            | 10000  |
+| <span style="color:#0000AA">Talented                           | 25000  |
+| <span style="color:#AA00AA">Professional                       | 50000  |
+| <span style="color:#FF55FF">Artisan                            | 100000 |
+| <span style="color:#FF5555">Expert                             | 200000 |
+| <span style="color:#AA0000">Master                             | 350000 |
+| <span style="color:#FFAA00">Grandmaster                        | 500000 |
+| <span style="color:#FFFF55">#1 Builder                         | N/A    |
 
 -   **Emblems** added
 -   **Default hotbar removed**, but the game now repeatedly prompts you to open the creative inventory
