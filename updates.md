@@ -1,5 +1,43 @@
 # GTB Changes since ~January 2023 <sup>ignoring seasonal themes</sup>
 
+## November 2024 (Again)
+
+-   Bug fixes idfk
+-   New themes :3
+
+```diff
++ Janitor
++ Coffee Shop
++ Wallpaper
++ Dock
++ Lawn Games
++ University
++ Shadow
++ Baseball Glove
++ Savanna
++ Narwhal
++ Capybara
++ Cement Mixer
++ Fruit Punch
++ Ruins
++ Blueprint
++ Centaur
++ Grappling Hook
++ Lecture Hall
++ Plumber
++ Grim Reaper
++ Griffin
++ Picnic
++ Fashion Show
++ Orchid
++ Blacksmith
++ Monocle
++ Bunker
++ Football Helmet
++ Lady Bug
++ Meadow
+```
+
 ## November 2024
 
 [Forum post](https://hypixel.net/threads/build-battle-speed-builders-emblems-1-21-more.5703921/)
